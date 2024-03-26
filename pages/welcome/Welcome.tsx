@@ -1,5 +1,6 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export function Welcome(): React.JSX.Element {
   return (
@@ -12,6 +13,9 @@ export function Welcome(): React.JSX.Element {
         source={require('../../images/welcome.png')}
         style={styles.sectionImage}
       />
+      <View style={styles.sectionIcon}>
+        <Icon name="message-plus" size={30} color={'white'} />
+      </View>
     </View>
   );
 }
@@ -22,7 +26,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     justifyContent: 'center',
     display: 'flex',
-    gap: 32,
+    gap: 16,
+    alignItems: 'center',
   },
   sectionTitle: {
     color: '#101010',
@@ -30,16 +35,25 @@ const styles = StyleSheet.create({
     fontFamily: 'Source Sans Pro',
     fontWeight: '700',
     lineHeight: 52,
-    textAlign: 'center',
   },
   sectionDescription: {
     fontSize: 18,
     fontFamily: 'Source Sans Pro',
     fontWeight: '400',
-    textAlign: 'center',
   },
   sectionImage: {
+    marginTop: 64,
     width: 300,
     height: 300,
+  },
+  sectionIcon: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    verticalAlign: 'middle',
+    marginTop: 64,
+    backgroundColor: 'black',
+    borderRadius: 28,
+    height: 56,
+    width: 56,
   },
 });
