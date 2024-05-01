@@ -1,8 +1,12 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-export function Welcome(): React.JSX.Element {
+const WelcomePage: React.FC<{ navigation: any }> = ({ navigation }) => {
+
+  const handleStart = async () => {
+    navigation.navigate('Login')
+  }
+
   return (
     <View style={styles.sectionContainer}>
       <Text style={styles.sectionTitle}>CarePoint</Text>
@@ -13,9 +17,9 @@ export function Welcome(): React.JSX.Element {
         source={require('../../images/welcome.png')}
         style={styles.sectionImage}
       />
-      <View style={styles.sectionIcon}>
-        <Icon name="message-plus" size={30} color={'white'} />
-      </View>
+      <TouchableOpacity onPress={handleStart} style={styles.button}>
+        <Text style={styles.buttonText}>Get Started</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -56,4 +60,18 @@ const styles = StyleSheet.create({
     height: 56,
     width: 56,
   },
+  button: {
+    width: '100%',
+    padding: 15,
+    backgroundColor: '#000',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
 });
+
+export default WelcomePage;
