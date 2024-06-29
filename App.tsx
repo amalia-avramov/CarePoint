@@ -8,6 +8,7 @@ import {AddPatient} from './screens/doctor/AddPatient';
 import {DoctorHomePage} from './screens/doctor/HomePage';
 import {PatientList} from './screens/doctor/PatientListPage';
 import {Profile} from './screens/doctor/Profile';
+import {PatientProfile} from './screens/patient/PatientProfile';
 import WelcomePage from './screens/welcome/Welcome';
 
 const Stack = createNativeStackNavigator();
@@ -41,8 +42,19 @@ function AuthenticatedStack() {
         options={{headerShown: false}}
       />
       <Stack.Screen
+        name="PatientProfile"
+        component={PatientProfile}
+        initialParams={{userId: 0}}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name="AddPatient"
         component={AddPatient}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Login"
+        component={LoginPage}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
