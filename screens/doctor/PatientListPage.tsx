@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface Patient {
@@ -87,6 +93,10 @@ function PatientListItem({
 }) {
   return (
     <View style={styles.listItem}>
+      <Image
+        source={require('../../images/no-profile-picture.png')}
+        style={styles.image}
+      />
       <View>
         <TextInput value={patient.name} style={styles.listHeader} />
         <View style={styles.listContent}>
@@ -98,10 +108,11 @@ function PatientListItem({
       <TouchableOpacity onPress={onClick}>
         <Icon
           name="arrow-right-bold"
-          size={30}
+          size={25}
           color={'#606060'}
           style={{
             marginTop: 8,
+            marginLeft: 8,
           }}
         />
       </TouchableOpacity>
@@ -148,7 +159,7 @@ const styles = StyleSheet.create({
   },
   listItem: {
     backgroundColor: '#F0F0F0',
-    borderRadius: 8,
+    borderRadius: 12,
     display: 'flex',
     flexDirection: 'row',
     alignContent: 'center',
@@ -163,6 +174,11 @@ const styles = StyleSheet.create({
   listContent: {
     display: 'flex',
     flexDirection: 'row',
-    gap: 4,
+    gap: 8,
+  },
+  image: {
+    width: 40,
+    height: 40,
+    marginRight: 8,
   },
 });
