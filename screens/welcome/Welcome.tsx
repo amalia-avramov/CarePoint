@@ -1,11 +1,10 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-const WelcomePage: React.FC<{ navigation: any }> = ({ navigation }) => {
-
+const WelcomePage: React.FC<{navigation: any}> = ({navigation}) => {
   const handleStart = async () => {
-    navigation.navigate('Login')
-  }
+    navigation.navigate('Login');
+  };
 
   return (
     <View style={styles.sectionContainer}>
@@ -22,11 +21,11 @@ const WelcomePage: React.FC<{ navigation: any }> = ({ navigation }) => {
       </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   sectionContainer: {
-    marginTop: 32,
+    marginTop: 64,
     paddingHorizontal: 24,
     justifyContent: 'center',
     display: 'flex',
