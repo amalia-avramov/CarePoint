@@ -4,7 +4,7 @@ import React from 'react';
 import LoginPage from './screens/authentication/LoginPage';
 import SignUpPage from './screens/authentication/SignUpPage';
 import {useAuthState} from './screens/authentication/useAuthState';
-import {AddPatient} from './screens/doctor/AddPatient';
+import {AddMedication} from './screens/doctor/AddMedication';
 import {DoctorHomePage} from './screens/doctor/HomePage';
 import {PatientList} from './screens/doctor/PatientListPage';
 import {Profile} from './screens/doctor/Profile';
@@ -48,8 +48,8 @@ function AuthenticatedStack() {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="AddPatient"
-        component={AddPatient}
+        name="AddMedication"
+        component={AddMedication}
         options={{headerShown: false}}
       />
       <Stack.Screen

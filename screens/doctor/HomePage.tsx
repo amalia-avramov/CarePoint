@@ -18,12 +18,13 @@ export function DoctorHomePage({navigation}: {navigation: any}) {
           <View style={styles.stepperItem} />
           <View style={styles.stepperItem} />
           <View style={styles.stepperItem} />
+          <View style={styles.stepperItem} />
         </View>
         <View style={styles.buttonContainer}>
           <Text style={styles.text}>Quick setup</Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => handleNavigate('AddPatient')}>
+            onPress={() => handleNavigate('AddMedication')}>
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
         </View>
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
   stepperContainer: {
     display: 'flex',
     flexDirection: 'row',
-    width: '23%',
+    width: '18%',
     gap: 8,
   },
   stepperItem: {
