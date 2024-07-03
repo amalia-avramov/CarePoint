@@ -1,5 +1,6 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 export function DoctorHomePage({navigation}: {navigation: any}) {
   function handleNavigate(path: string) {
     navigation.navigate(path);
