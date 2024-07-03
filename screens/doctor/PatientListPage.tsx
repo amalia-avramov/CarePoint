@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Image,
   StyleSheet,
   TextInput,
@@ -7,49 +8,47 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import firestore from '@react-native-firebase/firestore';
 
 interface Patient {
-  id: number;
+  id: string;
   name: string;
   phoneNumber: string;
   cnp: string;
 }
 
-const patients: Patient[] = [
-  {
-    id: 1,
-    name: 'John Doe',
-    phoneNumber: '555-1234',
-    cnp: '1234567890123',
-  },
-  {
-    id: 2,
-    name: 'Jane Smith',
-    phoneNumber: '555-5678',
-    cnp: '2345678901234',
-  },
-  {
-    id: 3,
-    name: 'Alice Johnson',
-    phoneNumber: '555-8765',
-    cnp: '3456789012345',
-  },
-  {
-    id: 4,
-    name: 'Bob Brown',
-    phoneNumber: '555-4321',
-    cnp: '4567890123456',
-  },
-  {
-    id: 5,
-    name: 'Charlie Davis',
-    phoneNumber: '555-6789',
-    cnp: '5678901234567',
-  },
-];
-
 export function PatientList({navigation}: {navigation: any}) {
   const [search, setSearch] = useState('');
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
+
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const patientsSnapshot = await firestore().collection('patients').get();
+        const patientsList = patientsSnapshot.docs.map(doc => ({
+          id: String(doc.id),
+          name: String(doc.data().name),
+          phoneNumber: String(doc.data().phoneNumber),
+          cnp: String(doc.data().cnp)
+        }));
+        setPatients(patientsList);
+        setFilteredPatients(patientsList);
+      } catch (error) {
+        Alert.alert('Error', 'There was an error fetching the patients');
+      }
+    };
+
+    fetchPatients();
+  }, []);
+
+  useEffect(() => {
+    const filterPatients = patients.filter(patient =>
+      patient.name.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredPatients(filterPatients);
+  }, [search, patients]);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('DoctorHome')}>
@@ -70,7 +69,7 @@ export function PatientList({navigation}: {navigation: any}) {
         />
       </View>
       <View style={styles.list}>
-        {patients.map(patient => (
+        {filteredPatients.map(patient => (
           <PatientListItem
             key={patient.id}
             patient={patient}

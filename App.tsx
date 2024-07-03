@@ -15,6 +15,7 @@ import { Medication } from './screens/patient/Medication';
 import { PatientProfilePage } from './screens/patient/PatientProfilePage';
 import { MedicationDetails } from './screens/patient/MedicationDetails';
 import { AnalysisPage } from './screens/patient/AnalysisPage';
+import { DoctorAccount } from './screens/doctor/Account';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,7 +44,7 @@ function AuthenticatedDoctorStack() {
       />
       <Stack.Screen
         name="DoctorProfile"
-        component={Profile}
+        component={DoctorAccount}
         options={{headerShown: false}}
       />
       <Stack.Screen

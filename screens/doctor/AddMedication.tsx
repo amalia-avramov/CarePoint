@@ -109,6 +109,7 @@ export function AddMedication({navigation}: {navigation: any}) {
     try {
       await firestore().collection('programs').add(newProgram);
       Alert.alert('Success', 'Medication program added successfully');
+      navigation.navigate('DoctorHome');
     } catch (error) {
       Alert.alert('Error', 'There was an error adding the medication program');
     }

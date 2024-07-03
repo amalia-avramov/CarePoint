@@ -1,9 +1,9 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {TextInput} from 'react-native';
+import firestore from '@react-native-firebase/firestore';
 
 interface EmergencyContact {
   name: string;
@@ -12,6 +12,7 @@ interface EmergencyContact {
 }
 
 interface Patient {
+  id: string;
   cnp: string;
   name: string;
   phoneNumber: string;
@@ -23,6 +24,7 @@ interface Patient {
 }
 
 const initialPatient: Patient = {
+  id: '121212121',
   cnp: '1234567890123',
   name: 'John Doe',
   phoneNumber: '555-1234',
@@ -60,6 +62,21 @@ export function PatientProfile({
     newContacts[index] = {...newContacts[index], [field]: value};
     setPatient({...patient, emergencyContacts: newContacts});
   };
+
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const patientDoc = await firestore().collection('patients').doc(userId).get();
+        if (patientDoc.exists) {
+          setPatient({ id: patientDoc.id, ...patientDoc.data() } as Patient);
+        }
+      } catch (error) {
+        Alert.alert('Error', 'There was an error fetching the patients');
+      }
+    };
+
+    fetchPatients();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -149,10 +166,10 @@ export function PatientProfile({
           <Text>{patient.height}</Text>
         )}
         <Text style={styles.label}>Allergies:</Text>
-        <Text>{patient.allergies.join(',')}</Text>
+        <Text>{patient?.allergies?.join(',')}</Text>
         <Text style={styles.label}>Emergency Contacts:</Text>
         <View style={styles.contacts}>
-          {patient.emergencyContacts.map((contact, index) => (
+          {patient?.emergencyContacts?.map((contact, index) => (
             <View key={index} style={styles.contactContainer}>
               <Text style={styles.label}>Name:</Text>
               <Text>{contact.name}</Text>
