@@ -63,7 +63,7 @@ export function DoctorAccount({ navigation }: { navigation: any }) {
           <Text style={styles.detailText}>Phone Number: {doctor.phoneNumber}</Text>
           <Text style={styles.detailText}>CNP: {doctor.cnp}</Text>
         </View>
-        <TouchableOpacity style={styles.viewMedicationButton} onPress={() => {
+        <TouchableOpacity style={styles.signOut} onPress={() => {
             signOut();
             navigation.navigate('Login');
         }}>
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
   },
-  viewMedicationButton: {
+  signOut: {
     backgroundColor: '#000',
     borderRadius: 20,
     paddingHorizontal: 30,

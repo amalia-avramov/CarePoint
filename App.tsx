@@ -7,7 +7,6 @@ import {useAuthState} from './screens/authentication/useAuthState';
 import {AddMedication} from './screens/doctor/AddMedication';
 import {DoctorHomePage} from './screens/doctor/HomePage';
 import {PatientList} from './screens/doctor/PatientListPage';
-import {Profile} from './screens/doctor/Profile';
 import {PatientProfile} from './screens/patient/PatientProfile';
 import WelcomePage from './screens/welcome/Welcome';
 import { PatientHomePage } from './screens/patient/PatientHomePage';
@@ -16,6 +15,7 @@ import { PatientProfilePage } from './screens/patient/PatientProfilePage';
 import { MedicationDetails } from './screens/patient/MedicationDetails';
 import { AnalysisPage } from './screens/patient/AnalysisPage';
 import { DoctorAccount } from './screens/doctor/Account';
+import { AddPatient } from './screens/doctor/AddPatient';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,12 +24,12 @@ function App() {
 
   return (
     <NavigationContainer>
-      {currentUser ? <AuthenticatedDoctorStack /> : <UnauthenticatedStack />}
+      {currentUser ? <AuthenticatedStack /> : <UnauthenticatedStack />}
     </NavigationContainer>
   );
 }
 
-function AuthenticatedDoctorStack() {
+function AuthenticatedStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -40,6 +40,11 @@ function AuthenticatedDoctorStack() {
       <Stack.Screen
         name="PatientList"
         component={PatientList}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddPatient"
+        component={AddPatient}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -63,13 +68,6 @@ function AuthenticatedDoctorStack() {
         component={LoginPage}
         options={{headerShown: false}}
       />
-    </Stack.Navigator>
-  );
-}
-
-function AuthenticatedPatientStack() {
-  return (
-    <Stack.Navigator>
       <Stack.Screen
         name="PatientHomePage"
         component={PatientHomePage}
@@ -78,6 +76,7 @@ function AuthenticatedPatientStack() {
       <Stack.Screen
         name="Medication"
         component={Medication}
+        initialParams={{patientId: 0}}
         options={{headerShown: false}}
       />
       <Stack.Screen

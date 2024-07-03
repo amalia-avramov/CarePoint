@@ -1,50 +1,84 @@
-import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import firestore from '@react-native-firebase/firestore';
 
-export function Medication({ navigation }: { navigation: any }) {
+interface Medicine {
+  name: string;
+  administrationMethod: 'oral' | 'inhalation'; // Example administration methods
+  frequency: 'daily' | 'every2days'; // Example frequencies
+  startDate: string;
+  endDate?: string;
+  program: ProgramEntry[];
+}
+
+interface ProgramEntry {
+  hour: number;
+  quantity: number;
+  dates: Date[];
+}
+
+interface Program {
+  id: string;
+  diagnostic: string;
+  medicine: Medicine;
+  patientId: string;
+}
+
+export function Medication({ navigation, route }: { navigation: any, route: any }) {
+  const {patientId} = route?.params;
+  const [programs, setPrograms] = useState<Program[]>([]);
+
   function handleNavigate(path: string) {
     navigation.navigate(path);
   }
 
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const snapshot = await firestore()
+          .collection('programs')
+          .where('patientId', '==', patientId)
+          .get();
+
+        const programsList: Program[] = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as Program[];
+
+        setPrograms(programsList);
+      } catch (err) {
+        Alert.alert('Error fetching programs');
+      }
+    };
+
+    if (patientId) {
+      fetchPrograms();
+    } else {
+      setPrograms([]);
+    }
+  }, [patientId]);
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate('PatientHomePage')}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
         <Icon name="arrow-left" size={30} />
       </TouchableOpacity>
       <Text style={styles.header}>Patient Health Dashboard</Text>
-      <View style={styles.card}>
-        <Text style={styles.cardHeader}>Medication Program</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('MedicationDetails')}>
-          <View style={styles.medicationItem}>
-            <Text style={styles.medicationName}>Medication Name</Text>
-            <Text style={styles.medicationDetails}>Dosage: 10mg</Text>
-            <Text style={styles.medicationDetails}>Frequency: Twice daily</Text>
-            <TouchableOpacity style={styles.markAsTakenButton}>
-              <Text style={styles.markAsTakenText}>Mark as Taken</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('MedicationDetails')}>
-          <View style={styles.medicationItem}>
-            <Text style={styles.medicationName}>Medication Name</Text>
-            <Text style={styles.medicationDetails}>Dosage: 20mg</Text>
-            <Text style={styles.medicationDetails}>Frequency: Once daily</Text>
-            <TouchableOpacity style={styles.markAsTakenButton}>
-              <Text style={styles.markAsTakenText}>Mark as Taken</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.cardHeader}>Tension Tracking Tab</Text>
-        <View style={styles.tensionItem}>
-          <Text style={styles.tensionDetails}>Highest Tension Level: 145</Text>
-          <TouchableOpacity style={styles.addEntryButton}>
-            <Text style={styles.addEntryText}>Add new entry</Text>
+      {programs.map(program => (
+        <View key={program.id} style={styles.card}>
+          <Text style={styles.cardHeader}>Medication Program</Text>
+          <Text style={styles.medicationName}>{program.diagnostic}</Text>
+          <Text style={styles.medicationDetails}>Start Date: {program.medicine.startDate}</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('MedicationDetails', { programId: program.id })}>
+            <View style={styles.medicationItem}>
+              <Text style={styles.medicationName}>{program.medicine.name}</Text>
+              <Text style={styles.medicationDetails}>Dosage: {program.medicine.administrationMethod}</Text>
+              <Text style={styles.medicationDetails}>Frequency: {program.medicine.frequency}</Text>
+            </View>
           </TouchableOpacity>
         </View>
-      </View>
+      ))}
     </View>
   );
 }

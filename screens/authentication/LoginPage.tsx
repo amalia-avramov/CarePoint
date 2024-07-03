@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Image,
@@ -9,8 +9,7 @@ import {
   View,
 } from 'react-native';
 import * as yup from 'yup';
-
-import {signIn} from './firebaseConfig';
+import { firebase } from '@react-native-firebase/auth';
 
 // Yup schema for validation
 const loginSchema = yup.object({
@@ -52,14 +51,51 @@ const LoginPage: React.FC<{navigation: any}> = ({navigation}) => {
     }
   };
 
+  const signIn = async (email: string, password: string) => {
+    try {
+      const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+      const user = userCredential.user;
+      return user.uid;
+    } catch (error: any) {
+      console.error('Error signing in: ', error);
+      Alert.alert('Login Failed', error.message);
+      throw error;
+    }
+  };
+
+  const getUserRole = async (userId: string) => {
+    try {
+      const docRef = firebase.firestore().collection('doctors').doc(userId);
+      const docSnapshot = await docRef.get();
+
+      if (docSnapshot.exists) {
+        return 'doctor';
+      } else {
+        return 'patient';
+      }
+    } catch (error) {
+      console.error('Error checking document existence: ', error);
+      Alert.alert('Error', 'There was an error checking the user role');
+      throw error;
+    }
+  }
+
   const handleFirebaseLogin = async (email: string, password: string) => {
     setLoading(true);
-    const result = await signIn(email, password);
-    setLoading(false);
-    if (result.success) {
-      navigation.navigate('DoctorHome');
-    } else {
-      Alert.alert('Login Failed', result.error.message);
+    try {
+      const userId = await signIn(email, password);
+      const role = await getUserRole(userId);
+      setLoading(false);
+      if (role === 'doctor') {
+        navigation.navigate('DoctorHome');
+      } else if (role === 'patient') {
+        navigation.navigate('PatientHomePage');
+      } else {
+        Alert.alert('Login Failed');
+      }
+    } catch (error) {
+      setLoading(false);
+      // Handle errors if needed
     }
   };
 

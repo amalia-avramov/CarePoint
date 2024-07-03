@@ -79,6 +79,9 @@ export function PatientList({navigation}: {navigation: any}) {
           />
         ))}
       </View>
+      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddPatient')}>
+        <Icon name="plus" size={24} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -179,5 +182,13 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 8,
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    backgroundColor: '#000',
+    borderRadius: 30,
+    padding: 16,
   },
 });

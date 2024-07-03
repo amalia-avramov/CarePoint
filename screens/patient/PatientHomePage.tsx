@@ -1,7 +1,10 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useAuthState } from '../authentication/useAuthState';
 
 export function PatientHomePage({ navigation }: { navigation: any }) {
+  const currentUser = useAuthState();
+  
   function handleNavigate(path: string) {
     navigation.navigate(path);
   }
@@ -32,7 +35,7 @@ export function PatientHomePage({ navigation }: { navigation: any }) {
         <Text style={styles.header}>Overview</Text>
         <View style={styles.footerCard}>
           <View style={styles.footerItem}>
-            <TouchableOpacity style={styles.icon} onPress={() => handleNavigate('Medication')}>
+            <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Medication', {patientId: currentUser?.uid})}>
               <Icon name="pill" color={'white'} size={30} />
             </TouchableOpacity>
             <Text>Medication</Text>

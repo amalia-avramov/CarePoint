@@ -8,7 +8,7 @@ export function DoctorHomePage({navigation}: {navigation: any}) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Welcome doctor!</Text>
+      <Text style={styles.header}>Welcome, Doctor!</Text>
       <View style={styles.card}>
         <View style={styles.imageContainer}>
           <Image source={require('../../images/Image.png')} />

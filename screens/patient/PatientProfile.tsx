@@ -5,12 +5,6 @@ import React, {useEffect, useState} from 'react';
 import {TextInput} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
-interface EmergencyContact {
-  name: string;
-  relation: string;
-  phoneNumber: string;
-}
-
 interface Patient {
   id: string;
   cnp: string;
@@ -20,22 +14,19 @@ interface Patient {
   weight: string;
   height: string;
   allergies: string[];
-  emergencyContacts: EmergencyContact[];
+  emergencyContacts: string[];
 }
 
 const initialPatient: Patient = {
-  id: '121212121',
-  cnp: '1234567890123',
-  name: 'John Doe',
-  phoneNumber: '555-1234',
-  bloodType: 'O+',
-  weight: '70kg',
-  height: '175cm',
-  allergies: ['Peanuts', 'Pollens'],
-  emergencyContacts: [
-    {name: 'Jane Doe', relation: 'Spouse', phoneNumber: '555-5678'},
-    {name: 'Mike Doe', relation: 'Brother', phoneNumber: '555-8765'},
-  ],
+  id: '',
+  cnp: '',
+  name: '',
+  phoneNumber: '',
+  bloodType: '',
+  weight: '',
+  height: '',
+  allergies: [],
+  emergencyContacts: [],
 };
 
 export function PatientProfile({
@@ -53,18 +44,12 @@ export function PatientProfile({
     setPatient({...patient, [field]: value});
   };
 
-  const handleContactChange = (
-    index: number,
-    field: keyof EmergencyContact,
-    value: string,
-  ) => {
-    const newContacts = [...patient.emergencyContacts];
-    newContacts[index] = {...newContacts[index], [field]: value};
-    setPatient({...patient, emergencyContacts: newContacts});
-  };
+  function handleNavigate(path: string) {
+    navigation.navigate(path);
+  }
 
   useEffect(() => {
-    const fetchPatients = async () => {
+    const fetchPatient = async () => {
       try {
         const patientDoc = await firestore().collection('patients').doc(userId).get();
         if (patientDoc.exists) {
@@ -75,7 +60,7 @@ export function PatientProfile({
       }
     };
 
-    fetchPatients();
+    fetchPatient();
   }, []);
 
   return (
@@ -87,44 +72,16 @@ export function PatientProfile({
         source={require('../../images/no-profile-picture.png')}
         style={styles.image}
       />
-      <Text style={styles.title}>Patient {userId}</Text>
+      <Text style={styles.title}>{patient.name}</Text>
       <View style={styles.buttonContainer}>
         {!isEditing && (
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>View report</Text>
-          </TouchableOpacity>
-        )}
-        {!isEditing && (
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Statistics</Text>
-          </TouchableOpacity>
-        )}
-        {isEditing ? (
-          <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
-            <Icon
-              name="content-save"
-              size={30}
-              style={{
-                marginTop: 8,
-              }}
-            />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
-            <Icon
-              name="circle-edit-outline"
-              size={30}
-              style={{
-                marginTop: 8,
-              }}
-            />
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Medication', {patientId: patient.id})}>
+            <Text style={styles.buttonText}>View Medication</Text>
           </TouchableOpacity>
         )}
       </View>
       <View style={styles.detailsContainer}>
-        <Text style={styles.label}>CNP: {patient.cnp}</Text>
-        <Text style={styles.label}>Name: {patient.name}</Text>
-
+        <Text style={styles.label}>CNP {patient.cnp}</Text>
         <Text style={styles.label}>Phone Number:</Text>
         {isEditing ? (
           <TextInput
@@ -166,17 +123,13 @@ export function PatientProfile({
           <Text>{patient.height}</Text>
         )}
         <Text style={styles.label}>Allergies:</Text>
-        <Text>{patient?.allergies?.join(',')}</Text>
+        <Text>{patient?.allergies?.join(', ')}</Text>
         <Text style={styles.label}>Emergency Contacts:</Text>
         <View style={styles.contacts}>
           {patient?.emergencyContacts?.map((contact, index) => (
             <View key={index} style={styles.contactContainer}>
               <Text style={styles.label}>Name:</Text>
-              <Text>{contact.name}</Text>
-              <Text style={styles.label}>Relation:</Text>
-              <Text>{contact.relation}</Text>
-              <Text style={styles.label}>Phone Number:</Text>
-              <Text>{contact.phoneNumber}</Text>
+              <Text>{contact}</Text>
             </View>
           ))}
         </View>
@@ -206,7 +159,7 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 12,
-    width: 110,
+    width: 180,
     backgroundColor: '#000',
     alignItems: 'center',
     borderRadius: 30,
@@ -267,5 +220,5 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
     flex: 1,
-  },
+  }
 });
