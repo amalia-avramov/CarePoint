@@ -77,7 +77,7 @@ exports.generateThumbnail = onObjectFinalized({ cpu: 2 }, async (event) => {
 });
 
 exports.weeklyReport = functions
-    .pubsub.schedule('every 2 minutes')
+    .pubsub.schedule('every 5 minutes')
     .onRun(async (context) => {
         await generateProgramsReport()
     });

@@ -18,14 +18,15 @@ const generateProgramsReport = async () => {
             const medicalRecord = new MedicalRecord(
                 programData.diagnostic,
                 programData.medicine,
+                programData.doctorId,
                 programData.patientId
             )
 
             records.push(medicalRecord);
         });
 
-        const reportHtml = generateReport(records);
-        await saveReportToStorage(reportHtml);
+        const [reportHtml, doctorId] = generateReport(records);
+        await saveReportToStorage(reportHtml, doctorId);
     } catch (error) {
         console.error("Error reading Firestore: ", error);
         throw new Error("Error reading Firestore");
@@ -58,7 +59,7 @@ function generateDateRange(startDate, endDate) {
 }
 
 // Function to generate a report with highlighted dates
-function generateReport(records) {
+async function generateReport(records) {
     let html = `
   <html>
     <head>
@@ -86,9 +87,32 @@ function generateReport(records) {
     <body>
       <h1>Patient Report</h1>
   `;
+    var patientSnapshot;
+    var doctorId;
+
+    try {
+        patientSnapshot = await db.collection('patients').get()
+    } catch (error) {
+        console.error("Error reading Firestore: ", error);
+        throw new Error("Error reading Firestore");
+    }
 
     records.forEach(record => {
-        html += `<h2>Patient ID: ${record.patientId}</h2>`;
+        var patientFound = false;
+        patientSnapshot.forEach(doc => {
+            const patientId = doc.id;
+            if (patientId == record.patientId) {
+                const patientData = doc.data()
+                const name = patientData.name;
+                const CNP = patientData.cnp;
+                doctorId = patientData.doctorId;
+                html += `<h2>Patient Name: ${name}, CNP: ${CNP}</h2>`;
+                patientFound = true;
+            }
+        });
+        if(!patientFound) {
+            html += `<h2>Patient Id: ${record.patientId}</h2>`;
+        }
         html += `<p><strong>Diagnostic:</strong> ${record.diagnostic}</p>`;
         html += `<p><strong>Medicine:</strong> ${record.medicine.name}</p>`;
         html += `<p><strong>Administration Method:</strong> ${record.medicine.administrationMethod}</p>`;
@@ -115,11 +139,11 @@ function generateReport(records) {
     });
 
     html += '</body></html>';
-    return html;
+    return [html, doctorId];
 }
 
 // Function to save the report to Firebase Storage
-async function saveReportToStorage(reportHtml) {
+async function saveReportToStorage(reportHtml, doctorId) {
     const fileName = `patient_report_${Date.now()}.html`;
     const file = bucket.file(fileName);
 
@@ -132,7 +156,7 @@ async function saveReportToStorage(reportHtml) {
         console.log(`Report saved to ${fileName}`);
 
         // Update database with the new report
-        await updateDatabase(fileName, '1234567890123')
+        await updateDatabase(fileName, doctorId)
     } catch (error) {
         console.error('Error saving report to storage:', error);
     }

@@ -21,7 +21,7 @@ class Medicine {
 }
 
 class MedicalRecord {
-    constructor(diagnostic, medicine, patientId) {
+    constructor(diagnostic, medicine, doctorId, patientId) {
         this.diagnostic = diagnostic;
         this.medicine = new Medicine(
             medicine.name,
@@ -31,6 +31,7 @@ class MedicalRecord {
             medicine.endDate,
             medicine.program
         );
+        this.doctorId = doctorId;
         this.patientId = patientId;
     }
 }
