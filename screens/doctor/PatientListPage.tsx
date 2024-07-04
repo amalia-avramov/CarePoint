@@ -1,14 +1,15 @@
+import firestore from '@react-native-firebase/firestore';
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Image,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import firestore from '@react-native-firebase/firestore';
 
 interface Patient {
   id: string;
@@ -30,7 +31,7 @@ export function PatientList({navigation}: {navigation: any}) {
           id: String(doc.id),
           name: String(doc.data().name),
           phoneNumber: String(doc.data().phoneNumber),
-          cnp: String(doc.data().cnp)
+          cnp: String(doc.data().cnp),
         }));
         setPatients(patientsList);
         setFilteredPatients(patientsList);
@@ -44,7 +45,7 @@ export function PatientList({navigation}: {navigation: any}) {
 
   useEffect(() => {
     const filterPatients = patients.filter(patient =>
-      patient.name.toLowerCase().includes(search.toLowerCase())
+      patient.name.toLowerCase().includes(search.toLowerCase()),
     );
     setFilteredPatients(filterPatients);
   }, [search, patients]);
@@ -79,7 +80,9 @@ export function PatientList({navigation}: {navigation: any}) {
           />
         ))}
       </View>
-      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddPatient')}>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate('AddPatient')}>
         <Icon name="plus" size={24} color="#fff" />
       </TouchableOpacity>
     </View>
@@ -95,16 +98,16 @@ function PatientListItem({
 }) {
   return (
     <View style={styles.listItem}>
-      <Image
-        source={require('../../images/no-profile-picture.png')}
-        style={styles.image}
-      />
       <View>
-        <TextInput value={patient.name} style={styles.listHeader} />
+        <Image
+          source={require('../../images/no-profile-picture.png')}
+          style={styles.image}
+        />
+        <Text style={styles.listHeader}>{patient.name}</Text>
         <View style={styles.listContent}>
-          <TextInput value={`CNP: ${patient.cnp}`} />
-          <TextInput value={'|'} />
-          <TextInput value={`Phone: ${patient.phoneNumber}`} />
+          <Text>{`CNP: ${patient.cnp}`}</Text>
+          <Text>|</Text>
+          <Text>{`Phone: ${patient.phoneNumber}`}</Text>
         </View>
       </View>
       <TouchableOpacity onPress={onClick}>
@@ -174,7 +177,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   listContent: {
-    display: 'flex',
     flexDirection: 'row',
     gap: 8,
   },
