@@ -12,6 +12,7 @@ import {
 import SelectDropdown from 'react-native-select-dropdown';
 import Stepper from 'react-native-stepper-ui';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useAuthState} from '../authentication/useAuthState';
 
 interface Program {
   hour: number;
@@ -31,6 +32,7 @@ interface Medication {
 interface MedicationProgram {
   diagnostic: string;
   patientId: string;
+  doctorId: string;
   medicine: Medication;
 }
 
@@ -53,6 +55,7 @@ export function AddMedication({navigation}: {navigation: any}) {
     endDate: '',
     program: [{hour: 0, quantity: 0, dates: []}],
   });
+  const currentUser = useAuthState();
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -104,6 +107,7 @@ export function AddMedication({navigation}: {navigation: any}) {
     const newProgram: MedicationProgram = {
       diagnostic,
       patientId: selectedPatient,
+      doctorId: String(currentUser?.uid),
       medicine,
     };
     try {
