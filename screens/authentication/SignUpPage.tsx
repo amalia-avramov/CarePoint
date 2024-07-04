@@ -99,7 +99,7 @@ const SignUpPage: React.FC<{navigation: any}> = ({navigation}) => {
     try {
       await firestore().collection('doctors').doc(userId).set({
         name: name,
-        CNP: cnp,
+        cnp: cnp,
         phoneNumber: phoneNumber,
         speciality: speciality,
         accountPending: true,

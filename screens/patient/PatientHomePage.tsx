@@ -1,10 +1,10 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useAuthState } from '../authentication/useAuthState';
+import {useAuthState} from '../authentication/useAuthState';
 
-export function PatientHomePage({ navigation }: { navigation: any }) {
+export function PatientHomePage({navigation}: {navigation: any}) {
   const currentUser = useAuthState();
-  
+
   function handleNavigate(path: string) {
     navigation.navigate(path);
   }
@@ -14,7 +14,10 @@ export function PatientHomePage({ navigation }: { navigation: any }) {
       <Text style={styles.header}>Welcome, Patient!</Text>
       <View style={styles.card}>
         <View style={styles.imageContainer}>
-          <Image source={require('../../images/Image.png')} style={styles.image} />
+          <Image
+            source={require('../../images/Image.png')}
+            style={styles.image}
+          />
         </View>
         <Text style={styles.trackText}>Track your progress</Text>
         <View style={styles.progressBarContainer}>
@@ -27,21 +30,24 @@ export function PatientHomePage({ navigation }: { navigation: any }) {
             <Text style={styles.trackButtonText}>Track</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.upgradeButton}>
-          <Text style={styles.upgradeButtonText}>Upgrade Plan</Text>
-        </TouchableOpacity>
       </View>
       <View style={styles.footerContainer}>
         <Text style={styles.header}>Overview</Text>
         <View style={styles.footerCard}>
           <View style={styles.footerItem}>
-            <TouchableOpacity style={styles.icon} onPress={() => navigation.navigate('Medication', {patientId: currentUser?.uid})}>
+            <TouchableOpacity
+              style={styles.icon}
+              onPress={() =>
+                navigation.navigate('Medication', {patientId: currentUser?.uid})
+              }>
               <Icon name="pill" color={'white'} size={30} />
             </TouchableOpacity>
             <Text>Medication</Text>
           </View>
           <View style={styles.footerItem}>
-            <TouchableOpacity style={styles.icon} onPress={() => handleNavigate('PatientProfilePage')}>
+            <TouchableOpacity
+              style={styles.icon}
+              onPress={() => handleNavigate('PatientProfilePage')}>
               <Icon name="account" color={'white'} size={30} />
             </TouchableOpacity>
             <Text>Account</Text>
